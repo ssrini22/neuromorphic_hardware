@@ -3,17 +3,13 @@
 // Engineer: Sanjeev Srinivasan
 // 
 // Create Date: 12/11/2025 01:26:28 PM
-// Design Name: 
 // Module Name: neuron_array
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
+// Project Name: neuron_array
+// Description: 4x4 array top module
+// Revision: 1.1
 // Revision 0.01 - File Created
+// Revision 1.1 - Neuron time logic, Instantiate submodules
+// Revision 1.2 - Setup for scan chain wrapper
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
@@ -56,9 +52,10 @@ module neuron_array#(
     //synapse outputs, one per input to each output
     //N-inputs*N_neurons synapse_units, weight_to_accum singals
     logic signed [b_weight+1:0] syn_out [N_inputs][N_neurons];
-    localparam logic signed [1:0] UP   = 2'sd1;
-    localparam logic signed [1:0] DOWN = -2'sd1;
-    
+    localparam signed [1:0] UP   = 2'sd1;
+    localparam signed [1:0] DOWN = -2'sd1;
+    localparam [b_time:0] refractory = 3'd2;
+
     genvar i, j;
     generate
         for (i = 0; i < N_inputs; i++) begin : gen_inputs
@@ -75,6 +72,7 @@ module neuron_array#(
                     .stdp_enable(1'b1),
                     .spike_in(spike_in[i]),
                     .neuron_time(neuron_time[j]),
+                    .refractory(refractory),
                     .spike_polarity(((i % 2 == 0) ? UP : DOWN)),
                     .weight_to_accum(syn_out[i][j])
                 );
@@ -84,16 +82,17 @@ module neuron_array#(
     
     //accum inputs per neuron / cols
     logic signed [b_accum+1:0] accum_cols [N_neurons];
-    localparam logic [b_thresh-1:0] threshold = b_thresh'(20);
-    localparam logic [1:0] refrac_t = 2'd2;
-    
+    localparam [b_thresh-1:0] threshold = b_thresh'(20);
+    localparam [b_time:0] leak_rate = 3'd2;
+
     genvar k;
     generate
         for (k = 0; k < N_neurons; k++) begin : gen_cols
             //accum 4 synapses in column
             accumulator #(
                 .b_weight(b_weight),
-                .b_accum(b_accum)
+                .b_accum(b_accum),
+                .b_time(b_time)
             ) acc_inst (
                 .clk(clk),
                 .reset(reset),
@@ -102,6 +101,9 @@ module neuron_array#(
                 .syn_1(syn_out[1][k]),
                 .syn_2(syn_out[2][k]),
                 .syn_3(syn_out[3][k]),
+                .refractory(refractory),
+                .leak_rate(leak_rate),
+                .neuron_time(neuron_time[k]),
                 .fire(fire[k]),
                 .accum_out(accum_cols[k])
             );
@@ -114,9 +116,7 @@ module neuron_array#(
                 .reset(reset),
                 .enable(1'b1),
                 .threshold(threshold),
-                .refractory(refrac_t),
                 .accum(accum_cols[k]),
-                .neuron_last_fire(), //see about necessity
                 .fire(fire[k])
             );
             
