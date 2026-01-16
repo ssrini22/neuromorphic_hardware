@@ -3,17 +3,13 @@
 // Engineer: Sanjeev Srinivasan
 // 
 // Create Date: 11/13/2025 08:18:19 PM
-// Design Name: 
 // Module Name: synapse_unit_2
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
+// Project Name: neuron_array
+// Description: synapse module with weight/time; STDP
 // Revision:
 // Revision 0.01 - File Created
+// Revision 1.1 - Syanpse unit with syanpse time, weight_to_accum; STDP weight update
+// Revision 1.2 - Remove excess logic; no STDP update during refractory period
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
@@ -29,25 +25,16 @@ module synapse_unit_2#(
     input logic reset,
     input logic enable,
     input logic stdp_enable,
-    
-    //input logic signed [1:0] spike_in,        // +1, -1, or 0 from UP/DOWN encoding
     input logic signed spike_in,        // 1 or 0 for UP or DOWN
-
     input logic [b_time:0] neuron_time,     // Time since neuron last fired - cycles
+    input logic [b_time:0] refractory,      //refractory period in clock cycles
     input logic signed [1:0] spike_polarity,
-    
-    //output logic [b_time:0] syn_time_o,      // Updated synapse time for STDP
     output logic signed [b_weight+1:0] weight_to_accum // To accumulator (spike x weight)
 );
 
     //Reg for weight and syn tim logic
     logic signed [b_weight-1:0] weight_reg;
     logic [b_time:0] syn_time;
-    
-    //Reset time if synapse gets a spike, or else increment up to 7
-//    logic [b_time:0] syn_time_next;
-//    assign syn_time_next = (spike_in != 0) ? '0 : 
-//        (syn_time < 2*LEARN+1) ? syn_time + 1 : syn_time;
     
     //Calculate delta-t and abs val, post-pre
     logic signed [b_time:0] delta_t;
@@ -58,15 +45,11 @@ module synapse_unit_2#(
     
     //STDP logic- enabled, spike, and within window
     logic stdp_calc;
-    assign stdp_calc = stdp_enable && ((spike_in != 0) || (neuron_time == 0)) && 
+    assign stdp_calc = stdp_enable && (((spike_in != 0) && (neuron_time > refractory)) || (neuron_time == 0)) && 
         (abs_delta_t <= LEARN); //add logic for fire, using neuron time is 0 now
     
-    //Timing logic fix for updating weights
-    logic pre_a_post;
-    assign pre_a_post = stdp_calc && (neuron_time == 0); //1 if pre after post update
-    
     //STDP LUT
-    localparam int LUT_SIZE = (LEARN*2)+1;
+    localparam int LUT_SIZE = (LEARN*2)+1; //fix
     logic signed [3:0] stdp_lut [0:LUT_SIZE-1];
     
     initial begin
@@ -82,10 +65,6 @@ module synapse_unit_2#(
     logic [b_time:0] lut_index;
     //outside +-3 then no weight (0)
     assign lut_index = ((delta_t < -LEARN) || (delta_t >  LEARN)) ? LEARN : delta_t + LEARN; //hardcoded long time
-    //assign lut_index = ((delta_t < -LEARN) || (delta_t >  LEARN)) ? LEARN : pre_a_post ? (delta_t + LEARN + 2) : delta_t + LEARN; //hardcoded long time
-
-    //assign lut_index = (delta_t < -LEARN) ? 0 : (delta_t >  LEARN) ? (2 * LEARN) : delta_t + LEARN; //rework
-    //assign lut_index = delta_t + LEARN;
     
     logic signed [b_weight-1:0] pass_weight;
     assign pass_weight = ((weight_reg + stdp_lut[lut_index]) == 0) ? 1 : (weight_reg + stdp_lut[lut_index]); //add overflow log
@@ -106,22 +85,7 @@ module synapse_unit_2#(
     end
     
     //assign time output and product of weight and spike to be accum
-    //assign syn_time_o = syn_time;
     assign weight_to_accum = (enable && spike_in != 0) ?
-        ($signed(spike_in) * $signed(weight_reg)) : '0;
-    //next check to take out the multiplication
-    
-    //Display
-//    always_ff @(posedge clk) begin
-//        if (enable && spike_in != 0) begin
-//            $display("T=%0t | spike=%0d | weight=%0d | product=%0d | Δt=%0d | lutval=%0d | weight_new=%0d",
-//                $time, spike_in, weight_reg,
-//                spike_in * weight_reg, delta_t,
-//                stdp_lut[lut_index], weight_reg);
-
-//            $display("neuron_time=%0d (bin=%b), syn_time=%0d (bin=%b)", 
-//                 neuron_time, neuron_time, syn_time, syn_time);
-//        end
-//    end
+        ($signed(weight_reg)) : '0;
 
 endmodule
