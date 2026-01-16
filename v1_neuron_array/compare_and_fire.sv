@@ -3,17 +3,13 @@
 // Engineer: Sanjeev Srinivasan
 // 
 // Create Date: 11/04/2025 07:02:10 PM
-// Design Name: 
 // Module Name: compare_and_fire
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
+// Project Name: neuron_array
+// Description: compares accumulated value against threshold
 // Revision:
 // Revision 0.01 - File Created
+// Revision 1.1 - compare and fire output
+// Revision 1.2 - remove refractory period, excess logic; add rising edge det.
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
@@ -28,53 +24,38 @@ module compare_and_fire #(
     input logic enable,
 
     input logic [b_thresh-1:0] threshold,       // Firing threshold
-    input logic [1:0] refractory,      // Refractory period (in cycles)
+    //input logic [1:0] refractory,      // Refractory period (in cycles)
     input logic signed [b_accum-1:0] accum,         // Membrane potential
 
-    output logic [2:0] neuron_last_fire,// Cycles since last spike (for STDP)
+    //output logic [2:0] neuron_last_fire,// Cycles since last spike (for STDP)
     output logic fire             // Output spike (1-cycle pulse)
 );
 
     // Internal state
     logic fire_reg;
-    logic [2:0] refrac_counter;
 
     // Exceeds threshold (only use magnitude of accum)
     logic exceed_threshold;
-    assign exceed_threshold = ($unsigned(accum[b_accum-2:0]) > threshold) && ~accum[b_accum-1];
+    assign exceed_threshold = accum > $signed(threshold);
 
-    // Fire logic + refractory enforcement
+    //rising edge detection; fires when exceed_threshold rises
+    logic exceed_threshold_d;
+
     always_ff @(posedge clk or posedge reset) begin
-        if (reset) begin
-            fire_reg        <= 1'b0;
-            refrac_counter  <= 3'd0;
-            neuron_last_fire <= 3'd4;  // out of STDP window
-        end
-        else if (enable) begin
-            if ((refrac_counter == 0) && exceed_threshold) begin
-                // Neuron fires
-                fire_reg        <= 1'b1;
-                refrac_counter  <= {1'b0, refractory}; // zero-padded 2-bit value
-                neuron_last_fire <= 3'd0;
-            end else begin
-                // No fire
-                fire_reg <= 1'b0;
+        if (reset)
+            exceed_threshold_d <= 0;
+        else if (enable)
+            exceed_threshold_d <= exceed_threshold;
+    end
+    
+    wire fire_pulse = exceed_threshold & ~exceed_threshold_d;
 
-                // Refractory countdown
-                if (refrac_counter != 0)
-                    refrac_counter <= refrac_counter - 1;
-
-                // Time since last fire (cap at 3'd4)
-                if (neuron_last_fire < 3'd4)
-                    neuron_last_fire <= neuron_last_fire + 1;
-                else
-                    neuron_last_fire <= 3'd4;
-            end
-        end else begin
-            fire_reg        <= 1'b0;
-            refrac_counter  <= 3'd0;
-            neuron_last_fire <= 3'd4;
-        end
+    
+    always_ff @(posedge clk or posedge reset) begin
+        if (reset)
+            fire_reg <= 1'b0;
+        else if (enable)
+            fire_reg <= fire_pulse;
     end
 
     assign fire = fire_reg;
