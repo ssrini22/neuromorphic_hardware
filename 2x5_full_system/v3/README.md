@@ -6,3 +6,9 @@ Next version will try to:
 - Add DM threshold into scan chain wrapper
 - Delay winner to be the cycle after threshold is reached, but maintain correct reset timing
 - Look into pipelining the accumulator/comparing alternating clock cycles
+
+
+<img width="2836" height="1318" alt="image" src="https://github.com/user-attachments/assets/9aebedf1-508e-42c8-8b64-91338c059d32" />
+Fig. 1: Behavioral Simulation Results
+
+Fig. 1 shows the correct accumulation timing and reset, but early fire/winner.
