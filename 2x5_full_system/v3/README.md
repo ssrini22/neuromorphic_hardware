@@ -1,5 +1,8 @@
 Current model for accuracy (no latency between accum/fire/WTA); run new implementation numbers.
-Kintex-7: 0.773ns at 100MHz -> Fmax ~ 108MHz; compared to Fmax ~ 285MHz previously
+
+Spartan-7: WNS-0.773ns at 100MHz (10ns) -> Fmax ~ 108MHz; compared to Fmax ~ 181Hz previously
+Basys3: WNS-0.576 at 100MHz (10ns),  at  -> Fmax ~ 106MHz; compared to Fmax ~ 185MHz previously
+Kintex7: WNS-2.964 at 100MHz (10ns),  at  -> Fmax ~ 142MHz; compared to Fmax ~ 285MHz previously
 
 Next version will try to:
 - Cycle spike trains in Delta Modulator to help STDP
