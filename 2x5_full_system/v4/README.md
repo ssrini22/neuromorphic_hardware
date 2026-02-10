@@ -1,4 +1,4 @@
-Description: This version maintains the design accuracy, and significantly improves all performance metrics. More detailed description to come.
+Description: This version maintains the design accuracy, and significantly improves all performance metrics compared to v3. More detailed description to come.
 Changes: DM spike trains now pulsed. Modified comb/seq logic in accumulator.sv and synapse_unit.sv, bug fixes in top modules.
 Yet to add: Adding DM Threshold to SCW, Replace 2D array with 1D, syanpse_unit correct bit sizing/4 bit size limit, STDP logic check and more..
 
