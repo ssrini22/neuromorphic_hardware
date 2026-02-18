@@ -22,5 +22,15 @@ WNS @ 300MHz/3.333ns = 0.244ns => Fmax = 324MHz
 Basys3:   
 LUT, FF, IO : (509, 424, 27)    
 P(dynamic) = 0.032mW    
-WNS @ 200MHz/5ns = 0.251ns => Fmax = 211MHz
+WNS @ 200MHz/5ns = 0.251ns => Fmax = 211MHz   
+
+ArtyA7:   
+LUT, FF, IO : (516, 424, 27)    
+P(dynamic) = 0.043mW    
+WNS @ 200MHz/5ns = 0.167ns => Fmax = 207MHz    
+
+Spartan7:   
+LUT, FF, IO : (514, 424, 27)    
+P(dynamic) = 0.042mW    
+WNS @ 200MHz/5ns = 0.351ns => Fmax = 215MHz    
 
