@@ -13,14 +13,14 @@ Behavioral Sim Example
 <img width="2819" height="1328" alt="image" src="https://github.com/user-attachments/assets/1d50a98f-e532-479a-b557-b02bb5d5fa91" />
 
 
-Post Implementation Numbers:
+Post Implementation Numbers:   
 Kintex-7:   
-LUT, FF, IO : (516, 424, 27)   
-P(dynamic) = 0.061mW
-WNS @ 300MHz/3.333ns = 0.244ns => Fmax = 324MHz
+LUT, FF, IO : (516, 424, 27)    
+P(dynamic) = 0.061mW    
+WNS @ 300MHz/3.333ns = 0.244ns => Fmax = 324MHz   
 
 Basys3:   
-LUT, FF, IO : (509, 424, 27)
-P(dynamic) = 0.032mW
+LUT, FF, IO : (509, 424, 27)    
+P(dynamic) = 0.032mW    
 WNS @ 200MHz/5ns = 0.251ns => Fmax = 211MHz
 
