@@ -19,15 +19,15 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-
 module delta_mod#(
     parameter DATA_WIDTH = 11,
-    parameter STEP_SIZE = 4, //threshold for spiking
+    //parameter STEP_SIZE = 4, //threshold for spiking
     parameter MAX_VAL = 2047,
     parameter MIN_VAL = 0
 )(
     input logic clk,
     input logic dm_reset,
+    input logic [3:0] STEP_SIZE,
     input logic [DATA_WIDTH-1:0] ecg_in,
     output logic [1:0] dm_spike_out,         //[0] UP, [1] DOWN
     output logic [DATA_WIDTH-1:0] signal
