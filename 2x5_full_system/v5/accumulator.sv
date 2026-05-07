@@ -55,7 +55,7 @@ module accumulator #(
     //assign pre_accum = $signed(syn_0) + $signed(syn_1);
     //assign fire = enable && ((accum_reg >= $signed(threshold)) || (accum_reg <= -$signed(threshold)));
     //assign fire = enable && (next_accum >= $signed(threshold)) && (refractory < neuron_time);
-    assign accum_on = enable && (refractory < neuron_time);
+    assign accum_on = enable && (refractory < neuron_time - 1'b1);
 
     always_ff @(posedge clk) begin
         if (reset) begin
