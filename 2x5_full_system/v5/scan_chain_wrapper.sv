@@ -19,17 +19,17 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-
 module scan_chain_wrapper#(
     parameter int N_inputs = 2,
     parameter int N_neurons = 5,
     parameter int b_weight = 4,
     parameter int b_accum = 8,
     parameter int b_thresh = 8,
+    parameter int b_dm_step = 4,
     parameter int b_time = 3,
     parameter int LEARN = 3,
     parameter int DATA_WIDTH = 11,
-    parameter int TOTAL_BITS = (N_inputs*N_neurons*(b_weight+2)) + (b_thresh) + 2*(b_time+1)
+    parameter int TOTAL_BITS = (N_inputs*N_neurons*(b_weight+2)) + (b_thresh) + 2*(b_time+1) + b_dm_step
 )(
     //neuron_array
     input logic clk,
@@ -73,6 +73,7 @@ module scan_chain_wrapper#(
     localparam B_THRESH = b_thresh;
     localparam B_REFRAC = b_time+1;
     localparam B_LEAK = b_time+1;
+    localparam B_DM_STEP = b_dm_step;
     localparam N = N_inputs*N_neurons;
     
     //Scan chain inputs
@@ -80,6 +81,7 @@ module scan_chain_wrapper#(
     logic [b_thresh-1:0] threshold;
     logic [b_time:0] refractory;
     logic [b_time:0] leak_rate;
+    logic [b_dm_step-1:0] dm_threshold;
     int offset;
 
     always_comb begin
@@ -98,6 +100,8 @@ module scan_chain_wrapper#(
         offset -= B_REFRAC;
         leak_rate = config_reg[offset -: B_LEAK];
         offset -= B_LEAK;
+        dm_threshold = config_reg[offset -: B_DM_STEP];
+        offset -= B_DM_STEP;
     end
     
     //Instantiate 
@@ -108,6 +112,7 @@ module scan_chain_wrapper#(
     delta_mod dm_dut(
         .clk(clk),
         .dm_reset(dm_reset),
+        .STEP_SIZE(dm_threshold),
         .ecg_in(ecg_in),
         .dm_spike_out(dm_out),
         .signal(signal)
