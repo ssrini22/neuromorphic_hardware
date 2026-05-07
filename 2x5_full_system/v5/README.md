@@ -1,3 +1,8 @@
+5/6 - Code updated with corrected STDP logic, and DM threshold in SCW
+
+<img width="975" height="398" alt="image" src="https://github.com/user-attachments/assets/3bb6dbe8-d491-47da-ab38-18990643b4d7" />
+-example synapse_unit/STDP waveform
+
 Best Timing Version I was able to achieve so far. It adds/changes the following:
 
 - It incorporates the old compare and fire concept in the accumulator (instead of adding the module itself, just needed to make 'fire' sequential)
