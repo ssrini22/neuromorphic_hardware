@@ -52,12 +52,13 @@ module synapse_unit_2#(
     always_comb begin
         delta_t = $signed({1'b0, neuron_time}) - $signed({1'b0, syn_time});
         
-        if ((delta_t < -LEARN) || (delta_t > LEARN))
+        if ((delta_t < -LEARN) || (delta_t > LEARN)) begin
             lut_index = LEARN;
-        else
+            stdp_calc = 1'b0; //outside learning window so never update STDP
+        end else begin
             lut_index = delta_t + LEARN;
-           
-        stdp_calc = stdp_enable && (((spike_in != 0) && (neuron_time > refractory)) || (neuron_time == 0)) && (neuron_time <= LEARN);
+            stdp_calc = stdp_enable && ((spike_in != 0) || (neuron_time == 0)); //inside learning window, just look at spike or fire
+        end
     end
     
     always_ff @(posedge clk) begin
