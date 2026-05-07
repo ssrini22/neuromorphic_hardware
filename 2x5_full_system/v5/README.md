@@ -1,7 +1,11 @@
 5/6 - Code updated with corrected STDP logic, and DM threshold in SCW
+5/7 - Should be fully working, pervious logic had extra updates
 
-<img width="975" height="398" alt="image" src="https://github.com/user-attachments/assets/3bb6dbe8-d491-47da-ab38-18990643b4d7" />
--example synapse_unit/STDP waveform
+The neuron_time < LEARN check on the spike_in path ensures that when a pre spike triggers an STDP, the post fire was  recent enough for the timing relationship to be relevant. Without it, a pre spike arriving long after the last fire could still produce a valid delta_t if syn_time happened to be similarly large.
+
+<img width="2322" height="896" alt="image" src="https://github.com/user-attachments/assets/9de1342c-02b7-4e9c-bb96-c10da7b1fcee" />
+
+
 
 Best Timing Version I was able to achieve so far. It adds/changes the following:
 
