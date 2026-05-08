@@ -54,7 +54,10 @@ module synapse_unit_2#(
             lut_index = LEARN;
             stdp_calc = 1'b0;
         end else begin
-            lut_index = delta_t + LEARN;
+            if (neuron_time == 0 && spike_in != 0)
+                lut_index = LEARN + 1;
+            else
+                lut_index = delta_t + LEARN;
             stdp_calc = stdp_enable && (((spike_in != 0) && (neuron_time < LEARN)) || (neuron_time == 0));
         end         
     end
