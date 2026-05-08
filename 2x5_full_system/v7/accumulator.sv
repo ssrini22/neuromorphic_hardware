@@ -62,7 +62,7 @@ module accumulator #(
     end
     
     
-    assign accum_on = enable && (refractory < (neuron_time - 1'b1));
+    assign accum_on = enable && (neuron_time > refractory - 1'b1);
 
     always_ff @(posedge clk) begin
         if (reset) begin
