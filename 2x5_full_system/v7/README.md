@@ -13,3 +13,6 @@ Final Changes:
 Basys3 (6ns): WNS = 0.493ns => Fmax = 181MHz  
 (LUT, FF, IO) : 529, 432, 27  
 Pdyn = 0.033W
+
+
+SOFTWARE MODEL: Hardware faithful implementation using snnTorch to train on MIT-BIH Database and explore classification accuracy and future work
