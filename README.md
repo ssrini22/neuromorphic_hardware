@@ -72,6 +72,7 @@ S. Srinivasan and N. N. Chakraborty, "DPE-Based Neuromorphic Hardware for Contin
 
 _______________________________________________________________________________________
 
-Author
+Author(s)
 
 Sanjeev Srinivasan - https://www.linkedin.com/in/sanjeevsrinivasan2003/
+Nishith Charkraborty
