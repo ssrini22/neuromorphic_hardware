@@ -2,9 +2,9 @@ DPE-Based Neurmorphic Hardware for Continuous-Time Biomedical Signal Classificat
 
 An event-driven Spiking Neural Network (SNN) accelerator for real-time ECG arrhythmia classification at the edge — designed in SystemVerilog, validated across four Xilinx FPGA families, and carried through a full RTL-to-GDSII ASIC flow on a 130nm process.
 
-Published at IEEE Dallas Circuits and Systems (DCAS) Conference, April 2026.
-
 291 MHz peak (Kintex-7) · 31,799 µm² die area · 2.64 mW switching power @ 100 MHz · 114 MHz est. max ASIC frequency
+
+Published at IEEE Dallas Circuits and Systems (DCAS) Conference, April 2026. Please use the citation below.
 
 _______________________________________________________________________________________
 
@@ -63,6 +63,13 @@ ________________________________________________________________________________
 Publication
 
 S. Srinivasan and N. N. Chakraborty, "DPE-Based Neuromorphic Hardware for Continuous-Time Biomedical Signal Classification," 2026 IEEE 19th Dallas Circuits and Systems Conference (DCAS), Dallas, TX, USA, 2026, pp. 1-4, doi: 10.1109/DCAS69364.2026.11545142.
+_______________________________________________________________________________________
+
+Citation 
+
+S. Srinivasan and N. N. Chakraborty, "DPE-Based Neuromorphic Hardware for Continuous-Time Biomedical Signal Classification," 2026 IEEE 19th Dallas Circuits and Systems Conference (DCAS), Dallas, TX, USA, 2026, pp. 1-4, doi: 10.1109/DCAS69364.2026.11545142. keywords: {Timing;Electrocardiography;Neurons;Frequency;Architecture;Computer architecture;Printing;Neuromorphics;Field programmable gate arrays;Arrays;Neuromorphic;ECG;spiking neural networks;dot-product engine;delta modulator;FPGA;ASIC},
+
+
 _______________________________________________________________________________________
 
 Author
